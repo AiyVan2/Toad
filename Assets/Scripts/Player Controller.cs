@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
             isCharging = false;
             float jumpPower = (currentCharge / maxChargeTime) * maxJumpForce;
 
-            Vector2 jumpDirection = new Vector2(facingRight ? 1f : -1f, 2f).normalized;
+            Vector2 jumpDirection = new Vector2(facingRight ? 1f : -1f, 2.5f).normalized;
             Vector2 jumpVelocity = jumpDirection * jumpPower;
 
             Debug.Log($"Jumping with power {jumpPower:F2} in direction {jumpDirection}");
