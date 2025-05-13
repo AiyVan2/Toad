@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,100 +9,119 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer rbSprite;
 
     [Header("Jump Settings")]
-    private float jumpForce = 10f;
-    private float maxChargeTime = 1.5f;
+    [SerializeField] private float maxChargeTime = 1.5f;
+    [SerializeField] private float maxJumpForce = 18f;
+
+    [Header("Gravity Settings")]
+    [SerializeField] private float fallMultiplier = 3f; // gravity multiplier when falling down
+    [SerializeField] private float lowJumpMultiplier = 2f; // gravity multiplier when jump is released early
+    [SerializeField] private float defaultGravityScale = 1f;
+
     private float currentCharge = 0f;
-    private float maxJumpForce = 18f;
 
     private bool isGrounded = false;
-    private bool landed = false;
     private bool isCharging = false;
-    private bool hasBounced = false;
     private bool facingRight = true;
+
+    [SerializeField] private Slider chargeSlider;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rbSprite = GetComponent<SpriteRenderer>();
+        rb.gravityScale = defaultGravityScale;
     }
 
-    void Update()
+    private void Update()
     {
         CheckGrounded();
         HandlePlayerDirection();
         HandleJump();
+        chargeSlider.value = currentCharge;
 
-        // Freeze horizontal movement if landed
-        if (landed)
+        // Debug velocity each frame to observe horizontal component change
+        Debug.Log($"Velocity: {rb.velocity}");
+    }
+
+    private void FixedUpdate()
+    {
+        ApplyBetterJumpPhysics();
+    }
+    private void ApplyBetterJumpPhysics()
+    {
+        if (rb.velocity.y < 0)
         {
-            rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+            // Falling: increase gravity to fall faster
+            rb.gravityScale = defaultGravityScale * fallMultiplier;
+        }
+        else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space))
+        {
+            // Short jump: increase gravity to fall faster if jump button released early
+            rb.gravityScale = defaultGravityScale * lowJumpMultiplier;
+        }
+        else
+        {
+            // Normal gravity scale
+            rb.gravityScale = defaultGravityScale;
         }
     }
 
     private void CheckGrounded()
     {
-        // Slightly more reliable ground check
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.6f, LayerMask.GetMask("Ground"));
-        isGrounded = hit.collider != null && hit.normal.y > 0.7f;
-
-        if (isGrounded)
-        {
-            hasBounced = false; // Reset bounce ability
-        }
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.55f, LayerMask.GetMask("Ground"));
+        isGrounded = hit.collider != null;
     }
 
     private void HandlePlayerDirection()
     {
-        if (isGrounded)
+        // Allow changing facing direction only when grounded and not charging jump
+        if (isGrounded && !isCharging)
         {
             if (Input.GetKeyDown(KeyCode.D))
             {
-                rbSprite.flipX = false;
                 facingRight = true;
+                rbSprite.flipX = false;
             }
             else if (Input.GetKeyDown(KeyCode.A))
             {
-                rbSprite.flipX = true;
                 facingRight = false;
+                rbSprite.flipX = true;
             }
         }
     }
 
     private void HandleJump()
     {
-        // Start charging jump
         if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             isCharging = true;
             currentCharge = 0f;
         }
 
-        // While charging
         if (isCharging)
         {
             currentCharge += Time.deltaTime;
             currentCharge = Mathf.Clamp(currentCharge, 0f, maxChargeTime);
         }
 
-        // Release jump
         if (isCharging && Input.GetKeyUp(KeyCode.Space))
         {
             isCharging = false;
             float jumpPower = (currentCharge / maxChargeTime) * maxJumpForce;
 
-            // Unfreeze X to allow movement
-            rb.constraints = RigidbodyConstraints2D.None;
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            Vector2 jumpDirection = new Vector2(facingRight ? 1f : -1f, 2f).normalized;
+            Vector2 jumpVelocity = jumpDirection * jumpPower;
 
-            Vector2 jumpDirection = new Vector2(facingRight ? 1f : -1f, 1f).normalized;
-            rb.velocity = jumpDirection * jumpPower;
-            landed = false;
+            Debug.Log($"Jumping with power {jumpPower:F2} in direction {jumpDirection}");
+
+            rb.velocity = new Vector2(jumpVelocity.x, jumpVelocity.y);
         }
     }
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * 0.6f);
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * 0.55f);
     }
 }
+
