@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
     private SpriteRenderer rbSprite;
+    private Animator animator;
 
     [Header("Jump Settings")]
     [SerializeField] private float maxChargeTime = 1.5f;
@@ -25,10 +26,13 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private Slider chargeSlider;
 
+
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rbSprite = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
         rb.gravityScale = defaultGravityScale;
     }
 
@@ -41,6 +45,18 @@ public class PlayerController : MonoBehaviour
 
         // Debug velocity each frame to observe horizontal component change
         Debug.Log($"Velocity: {rb.velocity}");
+
+        if (isGrounded)
+        {
+            animator.Play("Froggo Idle");
+        } else if(rb.velocity.y < 0)
+        {
+            animator.Play("Froggo Fall");
+        }
+        else
+        {
+            animator.Play("Froggo Jump");
+        }
     }
 
     private void FixedUpdate()
@@ -64,6 +80,7 @@ public class PlayerController : MonoBehaviour
             // Normal gravity scale
             rb.gravityScale = defaultGravityScale;
         }
+
     }
 
     private void CheckGrounded()
