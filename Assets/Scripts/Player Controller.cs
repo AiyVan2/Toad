@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private Slider chargeSlider;
 
+    public SoundEffects soundeffects;
+
 
 
     private void Start()
@@ -127,6 +129,7 @@ public class PlayerController : MonoBehaviour
         {
             isCharging = false;
             float jumpPower = (currentCharge / maxChargeTime) * maxJumpForce;
+            soundeffects.PlayJumpSound();
 
             Vector2 jumpDirection = new Vector2(facingRight ? 1f : -1f, 2.5f).normalized;
             Vector2 jumpVelocity = jumpDirection * jumpPower;
