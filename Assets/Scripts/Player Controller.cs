@@ -85,7 +85,10 @@ public class PlayerController : MonoBehaviour
 
     private void CheckGrounded()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.55f, LayerMask.GetMask("Ground"));
+        Vector2 boxSize = new Vector2(1f, 0.1f); 
+        Vector2 boxCenter = (Vector2)transform.position + Vector2.down * 0.55f;
+
+        RaycastHit2D hit = Physics2D.BoxCast(boxCenter, boxSize, 0f, Vector2.down, 0f, LayerMask.GetMask("Ground"));
         isGrounded = hit.collider != null;
     }
 
@@ -137,8 +140,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * 0.55f);
+        Vector2 boxSize = new Vector2(1f, 0.1f);
+        Vector2 boxCenter = (Vector2)transform.position + Vector2.down * 0.55f;
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(boxCenter, boxSize);
     }
 }
 
