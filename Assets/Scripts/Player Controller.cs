@@ -14,8 +14,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxJumpForce = 18f;
 
     [Header("Gravity Settings")]
-    [SerializeField] private float fallMultiplier = 3f; // gravity multiplier when falling down
-    [SerializeField] private float lowJumpMultiplier = 2f; // gravity multiplier when jump is released early
+    [SerializeField] private float fallMultiplier = 3f;
+    [SerializeField] private float lowJumpMultiplier = 2f; 
     [SerializeField] private float defaultGravityScale = 1f;
 
     private float currentCharge = 0f;
@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour
         rbSprite = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         rb.gravityScale = defaultGravityScale;
+
+
     }
 
     private void Update()
@@ -42,9 +44,6 @@ public class PlayerController : MonoBehaviour
         HandlePlayerDirection();
         HandleJump();
         chargeSlider.value = currentCharge;
-
-        // Debug velocity each frame to observe horizontal component change
-        Debug.Log($"Velocity: {rb.velocity}");
 
         if (isGrounded)
         {
@@ -138,6 +137,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    
     private void OnDrawGizmosSelected()
     {
         Vector2 boxSize = new Vector2(1f, 0.1f);
