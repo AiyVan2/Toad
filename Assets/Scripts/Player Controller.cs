@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
@@ -24,6 +25,10 @@ public class PlayerController : MonoBehaviour
     private bool isCharging = false;
     private bool facingRight = true;
 
+    // Mobile control flags
+    private bool lookLeftPressed = false;
+    private bool lookRightPressed = false;
+
     [SerializeField] private Slider chargeSlider;
 
     public SoundEffects soundeffects;
@@ -44,7 +49,7 @@ public class PlayerController : MonoBehaviour
     {
         CheckGrounded();
         HandlePlayerDirection();
-        HandleJump();
+        HandleJumpMobile();
         chargeSlider.value = currentCharge;
 
         if (isGrounded)
@@ -95,15 +100,14 @@ public class PlayerController : MonoBehaviour
 
     private void HandlePlayerDirection()
     {
-        // Allow changing facing direction only when grounded and not charging jump
         if (isGrounded && !isCharging)
         {
-            if (Input.GetKeyDown(KeyCode.D))
+            if (lookRightPressed)
             {
                 facingRight = true;
                 rbSprite.flipX = false;
             }
-            else if (Input.GetKeyDown(KeyCode.A))
+            else if (lookLeftPressed)
             {
                 facingRight = false;
                 rbSprite.flipX = true;
@@ -111,34 +115,44 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void HandleJump()
+    public void LookLeftDown() => lookLeftPressed = true;
+    public void LookLeftUp() => lookLeftPressed = false;
+    public void LookRightDown() => lookRightPressed = true;
+    public void LookRightUp() => lookRightPressed = false;
+
+    private void HandleJumpMobile()
     {
-        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+        if (isGrounded && Input.touchCount > 0)
         {
-            isCharging = true;
-            currentCharge = 0f;
-        }
+            Touch touch = Input.GetTouch(0);
 
-        if (isCharging)
-        {
-            currentCharge += Time.deltaTime;
-            currentCharge = Mathf.Clamp(currentCharge, 0f, maxChargeTime);
-        }
+            if (EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+                return;
 
-        if (isCharging && Input.GetKeyUp(KeyCode.Space))
-        {
-            isCharging = false;
-            float jumpPower = (currentCharge / maxChargeTime) * maxJumpForce;
-            soundeffects.PlayJumpSound();
+            if (touch.phase == TouchPhase.Began)
+            {
+                isCharging = true;
+                currentCharge = 0f;
+            }
+            else if (touch.phase == TouchPhase.Stationary && isCharging)
+            {
+                currentCharge += Time.deltaTime;
+                currentCharge = Mathf.Clamp(currentCharge, 0f, maxChargeTime);
+            }
+            else if (touch.phase == TouchPhase.Ended && isCharging)
+            {
+                isCharging = false;
+                float jumpPower = (currentCharge / maxChargeTime) * maxJumpForce;
+                soundeffects.PlayJumpSound();
 
-            Vector2 jumpDirection = new Vector2(facingRight ? 1f : -1f, 2.5f).normalized;
-            Vector2 jumpVelocity = jumpDirection * jumpPower;
+                Vector2 jumpDirection = new Vector2(facingRight ? 1f : -1f, 2.5f).normalized;
+                Vector2 jumpVelocity = jumpDirection * jumpPower;
 
-            Debug.Log($"Jumping with power {jumpPower:F2} in direction {jumpDirection}");
-
-            rb.velocity = new Vector2(jumpVelocity.x, jumpVelocity.y);
+                rb.velocity = new Vector2(jumpVelocity.x, jumpVelocity.y);
+            }
         }
     }
+
 
     
     private void OnDrawGizmosSelected()
