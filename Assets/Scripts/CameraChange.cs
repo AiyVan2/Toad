@@ -7,27 +7,14 @@ public class CameraChanger : MonoBehaviour
 {
     [SerializeField] private CinemachineVirtualCamera FirstArea;
     [SerializeField] private CinemachineVirtualCamera SecondArea;
-    [SerializeField] private CinemachineVirtualCamera ThirdArea;
-    [SerializeField] private CinemachineVirtualCamera FourthArea;
-    [SerializeField] private CinemachineVirtualCamera FifthArea;
-    [SerializeField] private CinemachineVirtualCamera SixthArea;
-    [SerializeField] private CinemachineVirtualCamera SeventhArea;
-    [SerializeField] private CinemachineVirtualCamera EigthArea;
-    [SerializeField] private CinemachineVirtualCamera NinthArea;
-
+    [SerializeField] private CinemachineVirtualCamera FirstLevelThirdArea;
 
 
     public enum CameraArea
     {
         FirstArea,
         SecondArea,
-        ThirdArea,
-        FourthArea,
-        FifthArea,
-        SixthArea,
-        SeventArea,
-        EightArea,
-        NinthArea,
+        FirstLevelThirdArea,
     }
 
     [SerializeField] private CameraArea area;
@@ -41,101 +28,17 @@ public class CameraChanger : MonoBehaviour
                 case CameraArea.FirstArea:
                     FirstArea.Priority = 10;
                     SecondArea.Priority = 9;
-                    ThirdArea.Priority = 9;
-                    FourthArea.Priority = 9;
-                    FifthArea.Priority = 9;
-                    SixthArea.Priority = 9;
-                    SeventhArea.Priority = 9;
-                    EigthArea.Priority = 9;
-                    NinthArea.Priority = 9;
+                    FirstLevelThirdArea.Priority = 9;
                     break;
                 case CameraArea.SecondArea:
                     FirstArea.Priority = 9;
                     SecondArea.Priority = 10;
-                    ThirdArea.Priority = 9;
-                    FourthArea.Priority = 9;
-                    FifthArea.Priority = 9;
-                    SixthArea.Priority = 9;
-                    SeventhArea.Priority = 9;
-                    EigthArea.Priority = 9;
-                    NinthArea.Priority = 9;
+                    FirstLevelThirdArea.Priority = 9;
                     break;
-                case CameraArea.ThirdArea:
+                case CameraArea.FirstLevelThirdArea:
                     FirstArea.Priority = 9;
                     SecondArea.Priority = 9;
-                    ThirdArea.Priority = 10;
-                    FourthArea.Priority = 9;
-                    FifthArea.Priority = 9;
-                    SixthArea.Priority = 9;
-                    SeventhArea.Priority = 9;
-                    EigthArea.Priority = 9;
-                    NinthArea.Priority = 9;
-                    break;
-                case CameraArea.FourthArea:
-                    FirstArea.Priority = 9;
-                    SecondArea.Priority = 9;
-                    ThirdArea.Priority = 9;
-                    FourthArea.Priority = 10;
-                    FifthArea.Priority = 9;
-                    SixthArea.Priority = 9;
-                    SeventhArea.Priority = 9;
-                    EigthArea.Priority = 9;
-                    NinthArea.Priority = 9;
-                    break;
-                case CameraArea.FifthArea:
-                    FirstArea.Priority = 9;
-                    SecondArea.Priority = 9;
-                    ThirdArea.Priority = 9;
-                    FourthArea.Priority = 9;
-                    FifthArea.Priority = 10;
-                    SixthArea.Priority = 9;
-                    SeventhArea.Priority = 9;
-                    EigthArea.Priority = 9;
-                    NinthArea.Priority = 9;
-                    break;
-                case CameraArea.SixthArea:
-                    FirstArea.Priority = 9;
-                    SecondArea.Priority = 9;
-                    ThirdArea.Priority = 9;
-                    FourthArea.Priority = 9;
-                    FifthArea.Priority = 9;
-                    SixthArea.Priority = 10;
-                    SeventhArea.Priority = 9;
-                    EigthArea.Priority = 9;
-                    NinthArea.Priority = 9;
-                    break;
-                case CameraArea.SeventArea:
-                    FirstArea.Priority = 9;
-                    SecondArea.Priority = 9;
-                    ThirdArea.Priority = 9;
-                    FourthArea.Priority = 9;
-                    FifthArea.Priority = 9;
-                    SixthArea.Priority = 9;
-                    SeventhArea.Priority = 10;
-                    EigthArea.Priority = 9;
-                    NinthArea.Priority = 9;
-                    break;
-                case CameraArea.EightArea:
-                    FirstArea.Priority = 9;
-                    SecondArea.Priority = 9;
-                    ThirdArea.Priority = 9;
-                    FourthArea.Priority = 9;
-                    FifthArea.Priority = 9;
-                    SixthArea.Priority = 9;
-                    SeventhArea.Priority = 9;
-                    EigthArea.Priority = 10;
-                    NinthArea.Priority = 9;
-                    break;
-                case CameraArea.NinthArea:
-                    FirstArea.Priority = 9;
-                    SecondArea.Priority = 9;
-                    ThirdArea.Priority = 9;
-                    FourthArea.Priority = 9;
-                    FifthArea.Priority = 9;
-                    SixthArea.Priority = 9;
-                    SeventhArea.Priority = 9;
-                    EigthArea.Priority = 9;
-                    NinthArea.Priority = 10;
+                    FirstLevelThirdArea.Priority = 10;
                     break;
             }
         }
